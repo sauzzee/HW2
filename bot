@@ -1,0 +1,58 @@
+require('dotenv').config();
+const { Bot } = require('grammy');
+
+
+if (!process.env.BOT_TOKEN || process.env.BOT_TOKEN === 'YOUR_TELEGRAM_BOT_TOKEN_HERE') {
+    console.error('Помилка: Будь ласка, додайте ваш токен у файл .env');
+    process.exit(1);
+}
+
+const bot = new Bot(process.env.BOT_TOKEN);
+
+
+bot.command('start', (ctx) => {
+    ctx.reply('Привіт! Я ваш новий Telegram-бот.');
+});
+
+
+bot.command('help', (ctx) => {
+    ctx.reply('Доступні команди:\n/start - Початок роботи\n/help - Список команд\n/joke - Розповісти жарт\n/about - Про бота');
+});
+
+
+bot.command('joke', (ctx) => {
+    const jokes = [
+        'Чому програмісти не люблять природу? Бо там забагато багів.',
+        'Скільки програмістів потрібно, щоб змінити лампочку? Жодного, це апаратна проблема.',
+        'Програміст іде спати і ставить на тумбочку дві склянки: одну з водою (якщо захоче пити), іншу порожню (якщо не захоче).'
+    ];
+    const randomJoke = jokes[Math.floor(Math.random() * jokes.length)];
+    ctx.reply(randomJoke);
+});
+
+
+bot.command('about', (ctx) => {
+    ctx.reply('Цей бот створений для домашнього завдання.');
+});
+
+
+bot.on('message:text', async (ctx) => {
+    const text = ctx.message.text.toLowerCase();
+
+    
+    if (text === 'hello' || text === 'привіт') {
+        return ctx.reply('Привіт, як справи?');
+    }
+
+    
+    if (text === 'help' || text === 'допомога') {
+        return ctx.reply('Схоже, вам потрібна допомога. Використовуйте команду /help для перегляду списку доступних функцій.');
+    }
+
+    
+    await ctx.reply(`Я отримав твоє повідомлення: ${ctx.message.text}`);
+});
+
+
+bot.start();
+console.log('Бот запущений...');
